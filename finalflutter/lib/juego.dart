@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:async';
 import 'package:finalflutter/pantallaInicio.dart';
+import 'package:finalflutter/pantallaJuego.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -26,20 +27,42 @@ class _GenerateGame extends State<juego>{
     super.initState();
     getRandomNumber();
     _getMaxRonda();
+    getRondas();
+    print('$rondas, $maxRonda');
+  }
+
+  void setRondas(int valor) async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      rondas = valor;
+      prefs.setInt("rondas", valor);
+    });
+  }
+
+  void getRondas() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      maxRonda = prefs.getInt('rondas') ?? 1;
+    });
+  }
+
+  void removeRondas() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('rondas');
   }
 
   void _setMaxRonda(int valor) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       maxRonda = valor;
-      prefs.setInt("1", valor);
+      prefs.setInt("maxRondas", valor);
     });
   }
 
   void _getMaxRonda() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      maxRonda = prefs.getInt('1') ?? 0;
+      maxRonda = prefs.getInt('maxRondas') ?? 0;
     });
   }
 
@@ -47,7 +70,7 @@ class _GenerateGame extends State<juego>{
     correcta = 0;
     numerosGenerados.clear();
 
-    for (int i = 0; i < numerosAdd; i++) {
+    for (int i = 0; i < numerosAdd * rondas; i++) {
       int numero = Random().nextInt(50) + 1;
       correcta += numero;
       numerosGenerados.add(numero);
@@ -64,9 +87,16 @@ class _GenerateGame extends State<juego>{
     if (sumaIngresada == correcta) {
       respuestaCorrecta = true;
       rondas++;
-    } else {
+      print(rondas);
+      removeRondas();
+      setRondas(rondas);
       setState(() {
-        _mostrarDialogo();
+        _mostrarDialogCorrecto();
+      });
+    } else {
+      _compruebaMax();
+      setState(() {
+        _mostrarDialogIncorrecto();
       });
     }
   }
@@ -75,7 +105,7 @@ class _GenerateGame extends State<juego>{
     getRandomNumber();
   }
 
-  Future<void> _mostrarDialogo() async {
+  Future<void> _mostrarDialogIncorrecto() async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -99,6 +129,44 @@ class _GenerateGame extends State<juego>{
                   context,
                   MaterialPageRoute(
                     builder: (context) => const pantallaInicial(),
+                  ),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+    void _compruebaMax() {
+      if (rondas < maxRonda)
+      _setMaxRonda(rondas);
+    }
+
+  Future<void> _mostrarDialogCorrecto() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Respuesta Correcta'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Maxima Ronda: $maxRonda'),       
+                Text('¿Qué deseas hacer?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Siguiente nivel'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const pantallajuego(),
                   ),
                 );
               },
