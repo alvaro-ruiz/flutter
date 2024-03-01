@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/Ejercicio10.dart';
+import 'package:flutter_application_2/Ejercicio11.dart';
+import 'package:flutter_application_2/Ejercicio12.dart';
 
 void main() {
   runApp(const MyApp());
@@ -59,34 +61,23 @@ class CustomDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            title: const Text('Favorite'),
+            title: const Text('Ejercicio11'),
             onTap: () {
-              // Acción al hacer clic en Elemento 2
-              Navigator.pop(context); // Cierra el drawer
+              Navigator.pop(context); 
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const Ejercicio11())
+              );
             },
           ),
           ListTile(
-            title: const Text('Music'),
-            leading: const Icon(Icons.music_note),
+            title: const Text('Ejercicio12'),
             onTap: () {
-              // Acción al hacer clic en Elemento 3
-              Navigator.pop(context); // Cierra el drawer
-            },
-          ),
-          ListTile(
-            title: const Text('Camera'),
-            leading: const Icon(Icons.camera),
-            onTap: () {
-              // Acción al hacer clic en Elemento 4
-              Navigator.pop(context); // Cierra el drawer
-            },
-          ),
-          ListTile(
-            title: const Text('Map'),
-            leading: const Icon(Icons.map),
-            onTap: () {
-              // Acción al hacer clic en Elemento 5
-              Navigator.pop(context); // Cierra el drawer
+              Navigator.pop(context); 
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Ejercicio12())
+              );
             },
           ),
         ],
