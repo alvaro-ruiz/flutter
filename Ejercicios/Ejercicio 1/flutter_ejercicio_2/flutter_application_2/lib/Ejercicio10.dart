@@ -27,7 +27,8 @@ class _RandomColors extends State<Ejercicio10> {
     const Color(0xFFFBC512),
     const Color(0xFF800080)
   ];
-
+  int timerDuration = 1500;
+  int pointsThreshold = 5;
 
   @override
   void initState() {
@@ -39,25 +40,11 @@ class _RandomColors extends State<Ejercicio10> {
 
 
   void timer() {
-    if (points < 10) {
-      Timer.periodic(const Duration(milliseconds: 1000), (timer) {
-        getRandomColor();
-        getRandomName();
-        setState(() {});
-      });
-    } else if (points >= 10 && points <= 20) {
-      Timer.periodic(const Duration(milliseconds: 500), (timer) {
-        getRandomColor();
-        getRandomName();
-        setState(() {});
-      });
-    } else if (points < 20){
-      Timer.periodic(const Duration(milliseconds: 250), (timer) {
-        getRandomColor();
-        getRandomName();
-        setState(() {});
-      });
-    }
+    Timer.periodic(Duration(milliseconds: timerDuration), (timer) {
+      getRandomColor();
+      getRandomName();
+      setState(() {});
+    });
   }
 
 
@@ -81,7 +68,8 @@ class _RandomColors extends State<Ejercicio10> {
                 },
                 child: Column(
                   children: [
-                    Container(
+                    AnimatedContainer( // Animación cuando se pulsa
+                      duration: const Duration(milliseconds: 300),
                       width: 120,
                       color: randomColor,
                       height: 120,
@@ -106,14 +94,14 @@ class _RandomColors extends State<Ejercicio10> {
 
   void getRandomColor() {
     Random random = Random();
-    int randomNumber = random.nextInt(6);
+    int randomNumber = random.nextInt(colorHex.length);
     randomColor = colorHex[randomNumber];
   }
 
 
   void getRandomName() {
     Random random = Random();
-    int randomNumber = random.nextInt(6);
+    int randomNumber = random.nextInt(colorHex.length);
     randomName = colorNames[randomNumber];
   }
 
@@ -140,9 +128,15 @@ class _RandomColors extends State<Ejercicio10> {
   void onGiftTap(String name, Color color) {
     var colorToString = hexToStringConverter(color);
     if (name == colorToString) {
-      points = points + 10;
+      points++;
+      if (points % pointsThreshold == 0) {
+        timerDuration = (timerDuration * 0.8).toInt();
+      }
     } else {
       points--;
+      if (timerDuration > 500) {
+        timerDuration = (timerDuration * 1.2).toInt();
+      }
     }
     setState(() {});
   }

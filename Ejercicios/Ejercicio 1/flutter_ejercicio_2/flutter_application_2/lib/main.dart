@@ -46,9 +46,6 @@ class CustomDrawer extends StatelessWidget {
           const UserAccountsDrawerHeader(
             accountName: Text('Alvaro'),
             accountEmail: Text('aaruizblanquez@gmail.com'),
-            currentAccountPicture: CircleAvatar(
-              backgroundImage: AssetImage('assets/Napoleon.jpg'),
-            ),
           ),
           ListTile(
             title: const Text('Ejercicio10'),
